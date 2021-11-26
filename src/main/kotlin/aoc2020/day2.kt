@@ -1,47 +1,44 @@
-package aoc2020.day1
+package aoc2020.day2
 
 import aoc2020.utils.loadInput
 
+private val regex = Regex("""(\d+)-(\d+) ([a-z]): ([a-z]+)""")
+
 fun main() {
-    val numbers = loadInput("/2020/day1")
+    val passwords = loadInput("/2020/day2")
         .bufferedReader()
         .readLines()
-        .map(String::toInt)
+        .map(::parse)
 
-    val complements = numbers.associateBy { 2020 - it }
+    passwords
+        .count(PasswordEntry::validPassword)
+        .apply(::println)
 
-    val allPairs = sequence {
-        for ((i, m) in numbers.withIndex()) {
-            for (n in numbers.subList(i, numbers.size)) {
-                if (n + m > 2020) {
-                    continue
-                }
-                yield(Triple(m, n, m+n))
-            }
-        }
-    }
-
-    val asdf = allPairs.firstNotNullOf { (a, b, sum) ->
-        complements[sum]?.let {
-            Triple(a, b, it)
-        }
-    }
-
-    asdf.let { (a, b, c) -> {
-            println(a * b * c)
-        }
-    }
-
-    val forTwo = numbers.findPairOfSum(2020)
-    println(forTwo)
-    println(forTwo.first * forTwo.second)
+    passwords
+        .count(PasswordEntry::validPassword2)
+        .apply(::println)
 }
 
-private fun List<Int>.findPairOfSum(sum: Int): Pair<Int, Int> {
-    val complements = associateBy { sum - it }
+fun parse(line: String) =
+    regex.matchEntire(line)!!
+        .destructured
+        .let { (low, high, letter, password) ->
+            PasswordEntry(low.toInt(), high.toInt(), letter.first(), password)
+        }
 
-    return firstNotNullOf { number ->
-        complements[number]?.let { Pair(it, number) }
-    }
-}
+data class PasswordEntry(
+    // Policy
+    val first: Int,
+    val second: Int,
+    val letter: Char,
+    // Password
+    val password: String,
+)
 
+fun PasswordEntry.validPassword(): Boolean =
+    (first..second).contains(password.count {
+        letter == it
+    })
+
+fun PasswordEntry.validPassword2(): Boolean =
+    (password[first - 1] == letter) xor (password[second - 1] == letter)
