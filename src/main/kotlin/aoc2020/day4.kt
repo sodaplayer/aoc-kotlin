@@ -7,9 +7,22 @@ fun main() {
         .bufferedReader()
         .readText()
         .trim()
-        .split("\n\n")
+        .splitPassports()
+        .map { passport -> passport
+            .splitFields()
+            .associate { it.toAttributes() } }
         .onEach(::println)
-        .count()
+}
 
+fun String.toAttributes(): Pair<String, String> {
+    val (key, value) = this.split(":")
+    return key to value
+}
 
+fun String.splitPassports(): List<String> {
+    return this.split("\n\n")
+}
+
+fun String.splitFields(): List<String> {
+    return this.split(" ", "\n")
 }
