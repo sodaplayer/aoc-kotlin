@@ -49,7 +49,6 @@ fun main() {
                 .contains(finalBoard.posMap.keys)
         }.first()
 
-
     println(sunUnmarked(worstBoard) * final.justCalled!!.toInt())
 }
 
@@ -61,8 +60,6 @@ fun initBoard(input: List<String>): Board {
         }.toMap()
     )
 }
-
-
 
 fun markNum(board: Board, number: String): Board {
     val pos = board.posMap[number]
