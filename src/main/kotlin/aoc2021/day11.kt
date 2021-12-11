@@ -14,23 +14,19 @@ fun main() {
         .mapIndexed { i, c -> i to (c.code - 48) }
         .toMap()
 
-    val sim = generateSequence(Step(grid, 0)) { (stepState, total) ->
-            val initial = initializeStep(stepState)
-
-            val seq = generateSequence(initial) { (state, queue) ->
-                if (queue.none()) null
-                else applyFlash(state, queue.head())
-                    .let {
-                        it.copy(queue = it.queue + queue.tail())
-                    }
+    val sim = generateSequence(Step(grid, 0)) { (state, total) ->
+        state
+            .let(::initializeStep)
+            .let(::reduceFlashes)
+            .run{ last().state }
+            .let {
+                val flashed = tallyFlashed(it)
+                Step(
+                    it + flashed,
+                    total + flashed.count()
+                )
             }
-
-
-            finalizeStep(seq.last().state)
-                .let {
-                    it.copy(total = it.total + total)
-                }
-        }
+    }
 
     val part1 = sim.take(1 + 100).last()
     drawState(part1.state)
@@ -44,27 +40,32 @@ fun main() {
     println(part2)
 }
 
+private fun reduceFlashes(initial: FlashResult) =
+    generateSequence(initial) { (state, queue) ->
+        if (queue.none()) null
+        else applyFlash(state, queue)
+    }
+
 typealias State = Map<Int, Int?>
 
 data class Step(val state: State, val total: Int)
 data class FlashResult(val state: State, val queue: Iterable<Int>)
 
-fun applyFlash(state: State, index: Int): FlashResult =
-    if (state[index] == null) FlashResult(state, emptyList())
-    else {
-        val neighbors = neighbors(index)
-
-        val updates = neighbors.map {
-            it to state[it]?.inc()
+fun applyFlash(state: State, queue: Iterable<Int>): FlashResult {
+    val i = queue.head()
+    return if (state[i] == null) FlashResult(state, emptyList())
+    else state
+        // increment neighbors
+        .plus(neighbors(i).map { it to state[it]?.inc() })
+        // mark self as flashed
+        .plus(i to null)
+        .let { updated ->
+            FlashResult(
+                updated,
+                updated.filterValues { (it ?: 0) > 9 }.keys + queue.tail()
+            )
         }
-
-        val updated = state + updates + (index to null)
-
-        FlashResult(
-            updated,
-            updated.filterValues { (it ?: 0) > 9 }.keys.sorted()
-        )
-    }
+}
 
 fun initializeStep(state: State): FlashResult {
     val updated = state.mapValues { (_, i) ->
@@ -78,18 +79,11 @@ fun initializeStep(state: State): FlashResult {
 }
 
 /** Tally flashed octopuses and reset energy levels to 0 */
-fun finalizeStep(state: State): Step {
-    val flashed = state
+fun tallyFlashed(state: State): Iterable<Pair<Int, Int>> {
+    return state
         .filterValues { it == null }
-        .mapValues { 0 }
-
-    return Step(
-        state + flashed,
-        flashed.size
-    )
+        .map { (i, _) -> i to 0 }
 }
-
-
 
 /**
  * @param i index into a 10x10 grid starting NW, going horizontal to NE, then row-by-row ending at SE
