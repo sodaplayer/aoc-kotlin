@@ -56,7 +56,7 @@ fun applyFlash(state: State, queue: Iterable<Int>): FlashResult {
     return if (state[i] == null) FlashResult(state, emptyList())
     else state
         // increment neighbors
-        .plus(neighbors(i).map { it to state[it]?.inc() })
+        .plus(neighborsMemoized(i).map { it to state[it]?.inc() })
         // mark self as flashed
         .plus(i to null)
         .let { updated ->
@@ -85,6 +85,8 @@ fun tallyFlashed(state: State): Iterable<Pair<Int, Int>> {
         .map { (i, _) -> i to 0 }
 }
 
+
+
 /**
  * @param i index into a 10x10 grid starting NW, going horizontal to NE, then row-by-row ending at SE
  */
@@ -112,6 +114,12 @@ fun neighbors(i: Int): List<Int> {
 
     return listOfNotNull(nw, n, ne, w, e, sw, s, se)
 }
+
+val neighborCache = mutableMapOf<Int, List<Int>>()
+fun neighborsMemoized(i: Int): List<Int> =
+    neighborCache.getOrPut(i) {
+        neighbors(i)
+    }
 
 /*
  *  0  1  2  3  4  5  6  7  8  9
