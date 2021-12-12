@@ -1,0 +1,31 @@
+graph caves {
+start -- XZ
+start -- ra
+start -- xq
+LD -- np
+LD -- yr
+LD -- zo
+LD -- end
+LO -- np
+LO -- yr
+LO -- end
+XZ -- kq
+XZ -- xq
+XZ -- yr
+kq -- np
+kq -- ra
+kq -- xq
+kq -- yr
+kq -- zo
+np -- zo
+np -- end
+ra -- xq
+ra -- zo
+xq -- yr
+yr -- zo
+LD [style=filled]
+LO [style=filled]
+XZ [style=filled]
+start [shape=rarrow]
+end [shape=doublecircle]
+}

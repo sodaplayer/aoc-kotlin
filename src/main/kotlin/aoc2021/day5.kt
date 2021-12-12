@@ -1,6 +1,7 @@
 package aoc2021
 
 import aoc2021.utils.loadInput
+import aoc2021.utils.partitionWhen
 import kotlin.math.max
 import kotlin.math.min
 
@@ -38,13 +39,25 @@ fun main() {
 
     // val horOverlaps = horRanges.filterValues { it.size > 1 }
 
-    println(horRanges)
+    println(
+        listOf(0..2, 0..3, 3..4, 5..6, 6..7).groupOverlapping().toList()
+    )
 }
 
-data class RangeMerge(val overlapping: Int, val ranges: List<IntRange>)
 
+data class RangeMerge(val overlapping: Int, val ranges: List<IntRange>)
+data class RangeMergeStep(val overlapping: Int, val ranges: List<IntRange>)
+/** Merges contiguous ranges together and counts their overlaps */
 //fun Sequence<IntRange>.mergeRanges(): RangeMerge {
 //}
+
+/** Separates a sorted sequence of ranges into groups of overlapping ones */
+fun Sequence<IntRange>.groupOverlapping(): Sequence<List<IntRange>> {
+    return partitionWhen { prev, next -> prev.last < next.first }
+}
+
+fun Iterable<IntRange>.groupOverlapping(): Sequence<List<IntRange>>
+        = this.asSequence().groupOverlapping()
 
 //data class
 
