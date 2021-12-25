@@ -22,6 +22,10 @@ fun <T> Iterable<T>.cdr(): Iterable<T> = this.drop(1)
 fun <T> Sequence<T>.partitionWhen(predicate: (T, T) -> Boolean): Sequence<List<T>>
         = PartitionWhenSequence(this, predicate)
 
+fun <T> Iterable<T>.partitionWhen(predicate: (T, T) -> Boolean): List<List<T>>
+        = PartitionWhenSequence(this.asSequence(), predicate).toList()
+
+
 private class PartitionWhenSequence<T>
     constructor(private val source: Sequence<T>, private val predicate: (T, T) -> Boolean) : Sequence<List<T>> {
     override fun iterator(): Iterator<List<T>> = PartitionWhenIterator(source.iterator(), predicate)
