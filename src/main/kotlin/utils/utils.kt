@@ -6,6 +6,12 @@ fun loadInput(path: String): InputStream {
     return checkNotNull({}::class.java.getResourceAsStream(path))
 }
 
+fun loadLines(path: String): List<String> {
+    return checkNotNull({}::class.java.getResourceAsStream(path))
+        .bufferedReader()
+        .readLines()
+}
+
 fun <T> Iterable<T>.head(): T = this.first()
 fun <T> Iterable<T>.tail(): Iterable<T> = this.drop(1)
 

@@ -1,4 +1,6 @@
 package aoc2015
 
-class day1 {
+
+fun main() {
+
 }
