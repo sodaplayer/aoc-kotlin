@@ -1,4 +1,4 @@
-package aoc2022.day1
+package aoc2022
 
 import utils.loadInput
 import utils.partitionWhen
