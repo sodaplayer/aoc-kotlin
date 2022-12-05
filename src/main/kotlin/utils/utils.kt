@@ -18,12 +18,13 @@ fun <T> Iterable<T>.tail(): Iterable<T> = this.drop(1)
 fun <T> Iterable<T>.car(): T = this.first()
 fun <T> Iterable<T>.cdr(): Iterable<T> = this.drop(1)
 
+fun <T> T.alsoPrintln(): T {
+    println(this)
+    return this
+}
 
 /* Based on JetBrain's Sequence library which is licensed by the Apache 2.0 license.
  * https://github.com/JetBrains/kotlin/blob/a829a6743d03509659a88bc49b25ae0abe230343/libraries/stdlib/src/kotlin/collections/Sequences.kt
- */
-/**
- *
  */
 fun <T> Sequence<T>.partitionWhen(predicate: (T, T) -> Boolean): Sequence<List<T>>
         = PartitionWhenSequence(this, predicate)
