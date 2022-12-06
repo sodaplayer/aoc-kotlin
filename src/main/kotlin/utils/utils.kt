@@ -18,8 +18,8 @@ fun <T> Iterable<T>.tail(): Iterable<T> = this.drop(1)
 fun <T> Iterable<T>.car(): T = this.first()
 fun <T> Iterable<T>.cdr(): Iterable<T> = this.drop(1)
 
-fun <T> T.alsoPrintln(): T {
-    println(this)
+fun <T> T.alsoPrintln(prefix: String = ""): T {
+    println("$prefix $this")
     return this
 }
 

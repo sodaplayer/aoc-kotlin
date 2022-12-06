@@ -9,8 +9,8 @@ fun main() {
         .bufferedReader()
         .lines()
         .asSequence()
-        .partition {
-        }
+//        .partition {
+//        }
 
     // Part 1
 
@@ -21,13 +21,13 @@ fun main() {
 //   1   5   9  13  17  21  25  29  33
 // [Q] [Q] [B] [D] [J] [W] [H] [R] [J]
 
-fun parseStackLine(line: String): Map<Int, String> {
+//fun parseStackLine(line: String): Map<Int, String> {
 
-    val charArray = line.toCharArray()
+//    val charArray = line.toCharArray()
 
-    charArray
-        .flatMapIndexed { index, c -> index to c }
-
-}
+//    charArray
+//        .flatMapIndexed { index, c -> index to c }
+//
+//}
 
 // make stacks
